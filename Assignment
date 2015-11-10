@@ -1,0 +1,220 @@
+MANIFEST.XML
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.syedsameerulhasan.ooplocation" >
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="OOP LOCATION"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme" >
+        <activity android:name=".MainActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+
+MAIN.XML
+
+package com.example.syedsameerulhasan.ooplocation;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+
+public class MainActivity extends AppCompatActivity {
+
+    private TextView ViewTextShowLocation;
+    private Button buttonGetLocation;
+    private ProgressBar locprogressBar;
+
+    private LocationManager locManager;
+    private LocationListener locListener;
+    private Location mobileLocation;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        ViewTextShowLocation = (TextView) findViewById(R.id.ViewTextShowLocation);
+        buttonGetLocation = (Button) findViewById(R.id.buttonGetLocation);
+
+        locprogressBar = (ProgressBar) findViewById(R.id.locprogressBar);
+        locprogressBar.setVisibility(View.GONE);
+
+        buttonGetLocation.setOnClickListener(new OnClickListener() {
+        public void onClick(View v) {
+                buttonGetLocationClick();
+
+         TextView gettingLocationText = (TextView) findViewById(R.id.gettingLocationText);
+         ProgressBar locprogressBar = (ProgressBar) findViewById(R.id.locprogressBar);
+
+         gettingLocationText.setText("Getting Location ...");
+         locprogressBar.setVisibility(View.VISIBLE);
+
+            }
+        }
+        );
+
+
+    }
+
+
+    private void getCurrentLocation() {
+        locManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locListener = new LocationListener() {
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onLocationChanged(Location location) {
+                // TODO Auto-generated method stub
+                mobileLocation = location;
+
+                TextView gettingLocationText = (TextView) findViewById(R.id.gettingLocationText);
+                ProgressBar locprogressBar = (ProgressBar) findViewById(R.id.locprogressBar);
+
+                gettingLocationText.setText("Location Found !!");
+
+                String longitude = "Longitude: " + mobileLocation.getLongitude();
+                String latitude = "Latitude: " + mobileLocation.getLatitude();
+                ViewTextShowLocation.setText("\n" + longitude + "\n\n\n" + latitude);
+
+                locprogressBar.setVisibility(View.GONE);
+            }
+        };
+        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locListener);
+    }
+
+    private void buttonGetLocationClick() {
+        getCurrentLocation();
+
+        if (mobileLocation == null) {
+
+            ViewTextShowLocation.setText("\n" + "Sorry, location could not be determined");
+        }
+    }
+
+}
+
+ACTIVITY_MAIN
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:text="My Location is:"
+        android:layout_width="match_parent"
+        android:textSize="70px"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="0dip"
+        android:layout_marginBottom="10dip" />
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/ViewTextShowLocation"
+        android:lines="8"
+        android:textSize="70px"
+        android:gravity="top"
+        android:textStyle="bold"
+        android:layout_marginTop="30dip"/>
+
+    <Button android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/buttonGetLocation"
+        android:text="Get My Location"
+        android:textSize="60px"
+        android:textStyle="bold"
+        android:layout_marginTop="180dip" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/gettingLocationText"
+        android:text=""
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="250dip"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/locprogressBar"
+        android:layout_gravity="center_horizontal"
+        android:indeterminate="false"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="300dip"/>
+
+</RelativeLayout>
+
+COLORS.XML
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#0f1d6b</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#3cff00</color>
+</resources>
+
+STRINGS.XML
+
+ <resources>
+    <string name="app_name">OOP LOCATION</string>
+</resources>
+
+STYLES.XML
+
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+</resources>
